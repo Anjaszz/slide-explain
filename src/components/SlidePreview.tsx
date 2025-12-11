@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { PresentationData, Slide } from '../types/index';
+import type { PresentationData } from '../types/index';
 import { RevisionPanel } from './RevisionPanel';
 import { useToast } from '../hooks/useToast';
 import { Toast } from './Toast';
@@ -14,7 +14,6 @@ interface SlidePreviewProps {
 
 export function SlidePreview({ presentation, onExport, onStartOver, onRevise, isRevising = false }: SlidePreviewProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [showScript, setShowScript] = useState(true);
   const [showRevisionPanel, setShowRevisionPanel] = useState(false);
   const { toasts, hideToast, success } = useToast();
   const currentSlide = presentation.slides[currentSlideIndex];

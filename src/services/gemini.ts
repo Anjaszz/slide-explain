@@ -41,6 +41,20 @@ export class GeminiService {
       storytelling: 'gunakan pendekatan naratif, mulai dengan konteks atau cerita relevan',
     };
 
+    const audienceInstructions = {
+      sd: 'sesuaikan dengan anak SD: gunakan bahasa yang sangat sederhana, contoh yang dekat dengan kehidupan sehari-hari mereka, hindari istilah teknis',
+      smp: 'sesuaikan dengan siswa SMP: gunakan bahasa yang mudah dipahami, berikan contoh yang relatable, gunakan istilah teknis dengan penjelasan',
+      sma: 'sesuaikan dengan siswa SMA: gunakan bahasa yang cukup formal namun tetap mudah dipahami, boleh gunakan istilah teknis dengan konteks',
+      mahasiswa: 'sesuaikan dengan mahasiswa: gunakan bahasa akademis, istilah teknis diperbolehkan, fokus pada analisis dan pemahaman mendalam',
+      umum: 'sesuaikan dengan audiens umum/profesional: gunakan bahasa yang jelas dan profesional, hindari jargon berlebihan',
+      'gen-z': 'sesuaikan dengan Gen Z: gunakan bahasa yang fresh, relatable, dan engaging tanpa kehilangan substansi',
+      masyarakat: 'sesuaikan dengan masyarakat umum: gunakan bahasa yang mudah dipahami semua kalangan, hindari istilah teknis yang rumit',
+    };
+
+    const audienceSection = preferences.targetAudience
+      ? `\n5. Target Audiens: ${audienceInstructions[preferences.targetAudience]}`
+      : '';
+
     return `Kamu adalah seorang ahli presentasi yang sangat berpengalaman. Tugasmu adalah mengubah materi berikut menjadi ${preferences.slideCount} slide presentasi yang menarik dan efektif.
 
 MATERI ORIGINAL:
@@ -53,7 +67,7 @@ INSTRUKSI PEMBUATAN SLIDE:
    - Konten yang terstruktur dengan baik
 
 3. Gaya konten: ${styleInstructions[preferences.slideStyle]}
-4. Tone presentasi: ${toneInstructions[preferences.tone]}
+4. Tone presentasi: ${toneInstructions[preferences.tone]}${audienceSection}
 
 PENTING - AGAR TIDAK TERLIHAT SEPERTI AI:
 - Gunakan bahasa natural dan mengalir, bukan kaku atau robotik
@@ -97,7 +111,9 @@ CATATAN:
 
   private buildScriptGenerationPrompt(
     slides: Slide[],
-    tone: string
+    tone: string,
+    targetAudience?: string,
+    includeInteraction?: boolean
   ): string {
     const toneGuidance = {
       formal: 'profesional dan terstruktur, seperti presenter konferensi',
@@ -106,12 +122,36 @@ CATATAN:
       storytelling: 'seperti storyteller yang membangun narasi engaging',
     };
 
+    const audienceGuidance = {
+      sd: 'Gunakan bahasa yang sangat sederhana dan penuh semangat. Ajak mereka berimajinasi dan gunakan perumpamaan yang mereka kenal dari kehidupan sehari-hari.',
+      smp: 'Gunakan bahasa yang mudah dipahami tapi tidak terlalu kekanak-kanakan. Berikan contoh yang relevan dengan usia mereka.',
+      sma: 'Gunakan bahasa yang cukup dewasa namun tetap engaging. Boleh gunakan istilah teknis dengan penjelasan singkat.',
+      mahasiswa: 'Gunakan bahasa akademis yang cerdas. Fokus pada analisis, data, dan pemahaman konseptual yang mendalam.',
+      umum: 'Gunakan bahasa yang profesional namun tetap accessible untuk berbagai latar belakang.',
+      'gen-z': 'Gunakan bahasa yang modern, relatable, dan engaging. Boleh sedikit casual tapi tetap substansial.',
+      masyarakat: 'Gunakan bahasa yang sangat jelas dan mudah dipahami oleh semua kalangan tanpa memandang latar belakang pendidikan.',
+    };
+
+    const audienceSection = targetAudience && targetAudience in audienceGuidance
+      ? `\n\nTARGET AUDIENS: ${audienceGuidance[targetAudience as keyof typeof audienceGuidance]}`
+      : '';
+
+    const interactionSection = includeInteraction
+      ? `\n\nINTERAKSI DENGAN AUDIENS:
+- Tambahkan pertanyaan retoris yang mengajak audiens berpikir
+- Sesekali gunakan frasa seperti "Coba bayangkan...", "Pernahkah kalian...", "Mari kita pikirkan bersama..."
+- Buat momen-momen di mana presenter "berbicara" langsung kepada audiens
+- Ajak audiens untuk relate dengan topik melalui pengalaman mereka
+- JANGAN berlebihan - 2-3 momen interaksi per presentasi sudah cukup
+- Pastikan interaksi terasa natural, bukan dipaksakan`
+      : '';
+
     return `Kamu adalah seorang public speaker profesional. Tugasmu adalah membuat naskah presentasi yang NATURAL dan TIDAK terdengar seperti dibuat AI.
 
 SLIDES YANG AKAN DIPRESENTASIKAN:
 ${JSON.stringify(slides, null, 2)}
 
-TONE: ${toneGuidance[tone as keyof typeof toneGuidance]}
+TONE: ${toneGuidance[tone as keyof typeof toneGuidance]}${audienceSection}${interactionSection}
 
 INSTRUKSI PEMBUATAN NASKAH:
 1. Buat naskah untuk SETIAP slide yang terdengar seperti manusia berbicara
@@ -223,10 +263,12 @@ PENTING:
 
   async generateScripts(
     slides: Slide[],
-    tone: string
+    tone: string,
+    targetAudience?: string,
+    includeInteraction?: boolean
   ): Promise<{ slideId: string; script: string }[]> {
     try {
-      const prompt = this.buildScriptGenerationPrompt(slides, tone);
+      const prompt = this.buildScriptGenerationPrompt(slides, tone, targetAudience, includeInteraction);
       const result = await this.model.generateContent(prompt);
 
       // Better error handling for empty or blocked responses
@@ -279,7 +321,9 @@ PENTING:
     // Step 2: Generate scripts for each slide
     const scripts = await this.generateScripts(
       slides as Slide[],
-      preferences.tone
+      preferences.tone,
+      preferences.targetAudience,
+      preferences.includeInteraction
     );
 
     // Step 3: Merge scripts with slides

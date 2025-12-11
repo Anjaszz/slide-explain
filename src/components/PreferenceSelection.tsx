@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { SlidePreferences, SlideStyle, PresentationTone } from '../types/index';
+import type { SlidePreferences, SlideStyle, PresentationTone, TargetAudience } from '../types/index';
 
 interface PreferenceSelectionProps {
   onSubmit: (preferences: SlidePreferences) => void;
@@ -10,9 +10,17 @@ export function PreferenceSelection({ onSubmit, onBack }: PreferenceSelectionPro
   const [slideCount, setSlideCount] = useState(8);
   const [slideStyle, setSlideStyle] = useState<SlideStyle>('mixed');
   const [tone, setTone] = useState<PresentationTone>('formal');
+  const [targetAudience, setTargetAudience] = useState<TargetAudience | undefined>(undefined);
+  const [includeInteraction, setIncludeInteraction] = useState<boolean>(false);
 
   const handleSubmit = () => {
-    onSubmit({ slideCount, slideStyle, tone });
+    onSubmit({
+      slideCount,
+      slideStyle,
+      tone,
+      targetAudience,
+      includeInteraction
+    });
   };
 
   return (
@@ -197,6 +205,167 @@ export function PreferenceSelection({ onSubmit, onBack }: PreferenceSelectionPro
               <div className="font-bold text-sm">Storytelling</div>
             </button>
           </div>
+        </div>
+
+        {/* Target Audience (Optional) */}
+        <div className="bg-white/40 rounded-3xl p-6 md:p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-linear-to-br from-[#FFC9B9] to-[#FF9A76] rounded-xl flex items-center justify-center">
+              <span className="text-xl">👥</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <label className="block text-xl font-bold text-gray-800">
+                  Target Audiens
+                </label>
+                <span className="px-2 py-0.5 bg-[#FFF0EA] text-[#FF9A76] rounded-full text-xs font-bold">
+                  Opsional
+                </span>
+              </div>
+              <p className="text-sm text-gray-600">Sesuaikan bahasa dengan target pendengarmu</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'sd' ? undefined : 'sd')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'sd'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">🎒</div>
+              <div className="font-bold text-sm">SD</div>
+            </button>
+
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'smp' ? undefined : 'smp')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'smp'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">📚</div>
+              <div className="font-bold text-sm">SMP</div>
+            </button>
+
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'sma' ? undefined : 'sma')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'sma'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">🎓</div>
+              <div className="font-bold text-sm">SMA</div>
+            </button>
+
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'mahasiswa' ? undefined : 'mahasiswa')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'mahasiswa'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">🎯</div>
+              <div className="font-bold text-sm">Mahasiswa</div>
+            </button>
+
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'umum' ? undefined : 'umum')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'umum'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">👔</div>
+              <div className="font-bold text-sm">Umum</div>
+            </button>
+
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'gen-z' ? undefined : 'gen-z')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'gen-z'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">✨</div>
+              <div className="font-bold text-sm">Gen Z</div>
+            </button>
+
+            <button
+              onClick={() => setTargetAudience(targetAudience === 'masyarakat' ? undefined : 'masyarakat')}
+              className={`p-4 rounded-2xl border-3 transition-all duration-300 ${
+                targetAudience === 'masyarakat'
+                  ? 'bg-linear-to-br from-[#FF9A76] to-[#ff8a5c] text-white border-[#FF9A76] shadow-xl transform scale-105'
+                  : 'bg-white/60 border-[#FFC9B9] hover:border-[#FF9A76] hover:bg-white/80 text-gray-800'
+              }`}
+            >
+              <div className="text-2xl mb-1">🌍</div>
+              <div className="font-bold text-sm">Masyarakat</div>
+            </button>
+          </div>
+          <div className="mt-4 flex items-center gap-2 text-sm">
+            <svg className="w-4 h-4 text-[#FF9A76]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <span className="text-gray-600 font-medium">
+              💡 Pilih target audiens untuk menyesuaikan tingkat bahasa dan kompleksitas
+            </span>
+          </div>
+        </div>
+
+        {/* Audience Interaction (Optional) */}
+        <div className="bg-white/40 rounded-3xl p-6 md:p-8">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-10 h-10 bg-linear-to-br from-[#FFC9B9] to-[#FF9A76] rounded-xl flex items-center justify-center">
+                <span className="text-xl">💬</span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <label className="block text-xl font-bold text-gray-800">
+                    Interaksi dengan Audiens
+                  </label>
+                  <span className="px-2 py-0.5 bg-[#FFF0EA] text-[#FF9A76] rounded-full text-xs font-bold">
+                    Opsional
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">Tambahkan pertanyaan atau ajakan untuk audiens dalam naskah</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIncludeInteraction(!includeInteraction)}
+              className={`relative inline-flex h-12 w-24 items-center rounded-full transition-all duration-300 ${
+                includeInteraction
+                  ? 'bg-linear-to-r from-[#FF9A76] to-[#ff8a5c] shadow-lg'
+                  : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-10 w-10 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                  includeInteraction ? 'translate-x-12' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+          {includeInteraction && (
+            <div className="mt-4 p-4 bg-[#FFF0EA] rounded-xl border-2 border-[#FFC9B9]/40 fade-in">
+              <div className="flex gap-3">
+                <div className="text-xl">✨</div>
+                <div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    Naskah presentasi akan mencakup pertanyaan retoris, ajakan berpikir, dan momen interaksi dengan audiens untuk membuat presentasi lebih engaging.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
