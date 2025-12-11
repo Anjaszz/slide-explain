@@ -108,7 +108,7 @@ export function GeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 md:px-6">
+    <div className="min-h-screen py-4 sm:py-6 md:py-8 px-3 sm:px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
         {step === 'upload' && (
           <div key="upload" className="fade-in">
