@@ -14,7 +14,7 @@ export class GeminiService {
     this.genAI = new GoogleGenerativeAI(API_KEY);
     // Update to latest stable model (2025)
     this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',
+      model: 'gemini-2.5-flash',
       generationConfig: {
         temperature: 0.7,
         topP: 0.95,

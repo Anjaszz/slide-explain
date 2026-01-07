@@ -31,13 +31,16 @@
   box-sizing: border-box;
 }
 
+
+
 body {
   margin: 0;
   min-height: 100vh;
   background: linear-gradient(135deg, var(--color-peach) 0%, var(--color-coral) 100%);
   background-attachment: fixed;
-  color: #2d2d2d;
+  color: #F0FFFE,#CFF7F3,#89D3DF ;
   overflow-x: hidden;
+  
 }
 
 #root {
